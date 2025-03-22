@@ -1,6 +1,4 @@
-# Web Development Portfolio
-
-Welcome to my portfolio of web applications and projects. This repository showcases tools and platforms I've developed, focusing on blockchain, bitmap technologies, and digital art.
+# A bunch of things that may help ya. Bitmap and ordainals. 
 
 ## Blockchain Tools
 
