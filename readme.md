@@ -3,21 +3,21 @@
 ## Blockchain Tools
 
 - [Bitoshi Explorer](https://switch-900.github.io/Bitoshi-Explorer/)  
-  A blockchain explorer for Bitcoin transactions and data visualization.
+  A simple to to view the number of Bitoshi's in a bitmap.
 
 ## Bitmap Technology
 
 - [Simple Bitmap](https://switch-900.github.io/SimpleBitmap/)  
-  A lightweight tool for creating and editing bitmap images.
+  A lightweight tool for visualising bitmap.
 - [Bitmap Nexus](https://www.bitmapnexus.com/)  
-  A central hub for bitmap-related resources and tools.
+  Nexus is my main project and an Bapp to work with the Bitmap standard creating a fully onchain experience.  
 - [Oodinals](https://www.oodinals.com/)  
-  A search tool for exploring ordinals on the Bitcoin blockchain.
+  A search tool for exploring ordinals on the Bitcoin blockchain. This will get an upgrade with a built in inscriber. 
 
 ## 3D Bitmap Platform
 
 - [3D Bitmap](https://www.3dbitmap.com/)  
-  A platform for rendering and visualizing three-dimensional bitmaps.
+  A platform for rendering and visualizing three-dimensional bitmap. 
   - [BitPaint](https://www.3dbitmap.com/bitpaint)  
     A creative tool for digital painting on bitmaps.
   - [Umbrel Integration](https://www.3dbitmap.com/umbrel.html)  
