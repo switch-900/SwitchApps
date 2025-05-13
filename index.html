@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Bitmap Inscription Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background-color: #f7931a;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #e78218;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .log-container {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .results-container {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+        .loading {
+            display: none;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #f7931a;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Bitcoin Bitmap Inscription Extractor</h1>
+    <div class="container">
+        <div>
+            <button id="fetchBtn">Fetch Bitmap Inscriptions</button>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <span>Processing... This may take a while for large blocks</span>
+            </div>
+        </div>
+        
+        <div>
+            <h2>Log</h2>
+            <div class="log-container" id="log"></div>
+        </div>
+        
+        <div>
+            <h2>Results</h2>
+            <div class="results-container" id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Constants
+        const BASE_URL = 'https://mempool.space/api';
+        
+        // DOM Elements
+        const fetchBtn = document.getElementById('fetchBtn');
+        const logContainer = document.getElementById('log');
+        const resultsContainer = document.getElementById('results');
+        const loadingElement = document.getElementById('loading');
+        
+        // Logging function
+        function log(message) {
+            const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
+            logContainer.innerHTML += `[${timestamp}] ${message}\n`;
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        /**
+         * Fetches the latest Bitcoin block from mempool.space API
+         * @returns {Promise<Object>} Latest block data
+         */
+        async function getLatestBlock() {
+            try {
+                log('Fetching latest block...');
+                const response = await fetch(`${BASE_URL}/blocks`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                // The API returns blocks in descending order, so the first one is the latest
+                log(`Latest block fetched: #${data[0].height}`);
+                return data[0];
+            } catch (error) {
+                log(`Error fetching latest block: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        /**
+         * Fetches all transactions for a given block hash
+         * @param {string} blockHash - The hash of the block to fetch transactions for
+         * @returns {Promise<Array>} Array of transaction objects
+         */
+        async function getBlockTransactions(blockHash) {
+            try {
+                let allTransactions = [];
+                let index = 0;
+                let hasMore = true;
+                
+                log('Fetching transactions (this may take some time for large blocks)...');
+                
+                // Handle potential pagination
+                while (hasMore) {
+                    log(`Fetching transactions batch starting at index: ${index}`);
+                    const response = await fetch(`${BASE_URL}/block/${blockHash}/txs?start=${index}`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    
+                    const transactions = await response.json();
+                    
+                    if (transactions.length === 0) {
+                        hasMore = false;
+                    } else {
+                        allTransactions = allTransactions.concat(transactions);
+                        index += transactions.length;
+                        log(`Fetched ${transactions.length} transactions. Total so far: ${allTransactions.length}`);
+                    }
+                }
+                
+                return allTransactions;
+            } catch (error) {
+                log(`Error fetching transactions for block ${blockHash}: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        /**
+         * Converts a hex string to a UTF-8 string
+         * @param {string} hex - The hex string to convert
+         * @returns {string} The UTF-8 string, or empty string if conversion fails
+         */
+        function hexToUtf8(hex) {
+            try {
+                // Remove '0x' prefix if present
+                const cleanHex = hex.startsWith('0x') ? hex.slice(2) : hex;
+                
+                // Convert hex to bytes
+                const bytes = new Uint8Array(cleanHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+                
+                // Convert bytes to UTF-8 string
+                return new TextDecoder('utf-8').decode(bytes);
+            } catch (error) {
+                // If there's an error in decoding, return an empty string
+                return '';
+            }
+        }
+        
+        /**
+         * Checks if a string represents a bitmap inscription
+         * @param {string} str - The string to check
+         * @returns {boolean} True if the string is a bitmap inscription, false otherwise
+         */
+        function isBitmapInscription(str) {
+            try {
+                // Check if the string contains "ord" and ends with ".bitmap"
+                return str.includes('ord') && str.endsWith('.bitmap');
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        /**
+         * Extracts the bitmap value from an inscription string
+         * @param {string} str - The inscription string
+         * @returns {string|null} The bitmap value (e.g., "896543.bitmap"), or null if not found
+         */
+        function extractBitmap(str) {
+            try {
+                // Use regex to find a pattern that looks like a bitmap inscription
+                // This pattern looks for numbers followed by .bitmap
+                const match = str.match(/(\d+\.bitmap)/);
+                return match ? match[1] : null;
+            } catch (error) {
+                log(`Error extracting bitmap: ${error.message}`);
+                return null;
+            }
+        }
+        
+        /**
+         * Main function that finds all bitmap inscriptions in the latest block
+         * @returns {Promise<Array>} Array of bitmap inscription objects
+         */
+        async function findBitmapInscriptions() {
+            try {
+                // Step 1: Get the latest block
+                const latestBlock = await getLatestBlock();
+                log(`Processing block #${latestBlock.height} (${latestBlock.id})...`);
+        
+                // Step 2: Get all transactions from the block
+                const transactions = await getBlockTransactions(latestBlock.id);
+                log(`Found ${transactions.length} transactions in the block.`);
+        
+                // Step 3-6: Process transactions and find bitmap inscriptions
+                const bitmapInscriptions = [];
+                let skippedTxs = 0;
+                let processedTxs = 0;
+                let malformedWitness = 0;
+        
+                for (const tx of transactions) {
+                    try {
+                        processedTxs++;
+                        
+                        // Log progress periodically
+                        if (processedTxs % 100 === 0) {
+                            log(`Processed ${processedTxs}/${transactions.length} transactions...`);
+                        }
+                        
+                        // Process each input (vin) of the transaction
+                        if (!tx.vin || !Array.isArray(tx.vin)) {
+                            log(`Transaction ${tx.txid} has no inputs, skipping.`);
+                            skippedTxs++;
+                            continue;
+                        }
+                        
+                        for (const input of tx.vin) {
+                            // Check if witness data exists
+                            if (input.witness && Array.isArray(input.witness)) {
+                                for (const witnessItem of input.witness) {
+                                    // Skip if witnessItem is not a valid string
+                                    if (typeof witnessItem !== 'string') {
+                                        malformedWitness++;
+                                        continue;
+                                    }
+                                    
+                                    // Decode witness data from hex to UTF-8
+                                    const decodedWitness = hexToUtf8(witnessItem);
+                                    
+                                    // Skip if decoding failed or result is empty
+                                    if (!decodedWitness) {
+                                        continue;
+                                    }
+                                    
+                                    // Check if it's a bitmap inscription
+                                    if (isBitmapInscription(decodedWitness)) {
+                                        const bitmap = extractBitmap(decodedWitness);
+                                        if (bitmap) {
+                                            bitmapInscriptions.push({
+                                                txid: tx.txid,
+                                                block_height: latestBlock.height,
+                                                bitmap: bitmap
+                                            });
+                                            
+                                            log(`Found bitmap inscription: ${bitmap} in transaction ${tx.txid}`);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        log(`Error processing transaction ${tx.txid}: ${error.message}`);
+                        skippedTxs++;
+                    }
+                }
+        
+                log(`\nSummary:`);
+                log(`- Total transactions: ${transactions.length}`);
+                log(`- Processed transactions: ${processedTxs}`);
+                log(`- Skipped transactions: ${skippedTxs}`);
+                log(`- Malformed witness items: ${malformedWitness}`);
+                log(`- Found bitmap inscriptions: ${bitmapInscriptions.length}`);
+        
+                return bitmapInscriptions;
+            } catch (error) {
+                log(`Error in findBitmapInscriptions: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        // Event Listeners
+        fetchBtn.addEventListener('click', async () => {
+            try {
+                // Clear previous results
+                resultsContainer.innerHTML = '';
+                
+                // Show loading indicator
+                loadingElement.style.display = 'flex';
+                fetchBtn.disabled = true;
+                
+                // Fetch bitmap inscriptions
+                const inscriptions = await findBitmapInscriptions();
+                
+                // Display results
+                resultsContainer.innerHTML = JSON.stringify(inscriptions, null, 2);
+                
+                // Hide loading indicator
+                loadingElement.style.display = 'none';
+                fetchBtn.disabled = false;
+                
+                log('Completed successfully.');
+            } catch (error) {
+                log(`Application error: ${error.message}`);
+                loadingElement.style.display = 'none';
+                fetchBtn.disabled = false;
+            }
+        });
+        
+        // Initial log message
+        log('Application loaded. Click the button to fetch bitmap inscriptions.');
+    </script>
+</body>
+</html>
