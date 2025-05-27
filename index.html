@@ -3,1467 +3,531 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitcoin Bitmap Inscription Tracker</title>
+    <title>Bitcoin Ordinals & Bitmap Tools</title>
     <style>
-        :root {
-            --bitcoin-orange: #f7931a;
-            --bitcoin-dark: #4d3b24;
-            --bg-light: #f8f9fa;
-            --bg-dark: #343a40;
-            --text-light: #f8f9fa;
-            --border-radius: 6px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
-            background-color: var(--bg-light);
-            color: #333;
+            padding: 0 20px;
         }
-        
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--bitcoin-orange);
-        }
-        
-        h1, h2, h3 {
-            color: var(--bitcoin-dark);
-        }
-        
-        .bitcoin-icon {
-            color: var(--bitcoin-orange);
-            font-weight: bold;
-            font-size: 24px;
-            margin-right: 10px;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #fff;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            flex-wrap: wrap;
-        }
-        
-        button {
-            background-color: var(--bitcoin-orange);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-        
-        button:hover {
-            background-color: #e78218;
-        }
-        
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        
-        .flex-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .left-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-width: 300px;
-        }
-        
-        .right-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-width: 300px;
-        }
-        
-        .panel {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .log-container {
-            height: 300px;
-            overflow-y: auto;
-            font-family: 'Consolas', monospace;
-            font-size: 14px;
-            white-space: pre-wrap;
-            background-color: #333;
-            color: #eee;
-            padding: 10px;
-            border-radius: var(--border-radius);
-        }
-        
-        .results-container {
-            height: 600px;
-            overflow-y: auto;
-            font-family: 'Consolas', monospace;
-            font-size: 14px;
-        }
-        
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-        
-        .loading {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .spinner {
-            border: 3px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--bitcoin-orange);
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .stats {
-            display: flex;
-            gap: 20px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .stat-box {
-            flex: 1;
-            padding: 10px;
-            background-color: #f4f4f4;
-            border-radius: var(--border-radius);
+
+        /* Header */
+        .header {
             text-align: center;
-            min-width: 150px;
+            padding: 80px 0;
+            background: linear-gradient(45deg, #00bcd4 0%, #4dd0e1 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            position: relative;
+            color: cyan;
         }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--bitcoin-orange);
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%2300bcd4" opacity="0.1"><animate attributeName="r" values="2;5;2" dur="2s" repeatCount="indefinite"/></circle></svg>') repeat;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
         }
-        
-        .stat-label {
-            font-size: 14px;
-            color: #666;
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 14px;
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            color: cyan;
         }
-        
-        th, td {
-            padding: 8px 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            color: cyan;
         }
-        
-        th {
-            background-color: #f4f4f4;
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 40px 0;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            background: rgba(0, 188, 212, 0.1);
+            border: 2px solid rgba(0, 188, 212, 0.3);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #00bcd4;
             font-weight: 600;
         }
-        
-        tr:hover {
-            background-color: #f9f9f9;
+
+        .nav-item:hover {
+            background: rgba(0, 188, 212, 0.2);
+            border-color: #00bcd4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
         }
-        
-        .checkbox-container {
+
+        /* Sections */
+        .section {
+            margin: 60px 0;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #00bcd4, #4dd0e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 15px;
         }
-        
-        input[type="checkbox"] {
-            margin: 0;
+
+        .section h2::before {
+            content: '';
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #00bcd4, #4dd0e1);
+            border-radius: 50%;
+            flex-shrink: 0;
         }
-        
-        input[type="number"] {
-            width: 70px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
         }
-        
-        .hidden {
-            display: none;
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .badge {
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 188, 212, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .tool-card:hover::before {
+            left: 100%;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 188, 212, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 188, 212, 0.2);
+        }
+
+        .tool-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #00bcd4;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-card p {
+            color: #cccccc;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-card a {
+            color: #00bcd4;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 2px solid #00bcd4;
+            border-radius: 25px;
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
-        
-        .badge-new {
-            background-color: #28a745;
-            color: white;
+
+        .tool-card a:hover {
+            background: #00bcd4;
+            color: #000;
+            transform: scale(1.05);
         }
-        
-        .badge-processing {
-            background-color: #ffc107;
-            color: #333;
+
+        /* Font Grid */
+        .font-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
         }
-        
-        .badge-error {
-            background-color: #dc3545;
-            color: white;
+
+        .font-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
         }
-        
-        .block-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            font-size: 14px;
-            padding: 10px;
-            background-color: #f4f4f4;
-            border-radius: var(--border-radius);
-            flex-wrap: wrap;
-            gap: 10px;
+
+        .font-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 188, 212, 0.3);
         }
-        
-        .settings-panel {
-            padding: 15px;
-            margin-top: 15px;
-            background-color: #fff;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+        .font-preview {
+            font-size: 2rem;
+            margin: 15px 0;
+            background: linear-gradient(45deg, #00bcd4, #4dd0e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        .settings-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            cursor: pointer;
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 60px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 80px;
         }
-        
-        .settings-content {
-            display: none;
+
+        .footer p {
+            color: #888;
+            font-size: 1.1rem;
         }
-        
-        .settings-content.visible {
-            display: block;
-        }
-        
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #ddd;
-            margin-bottom: 15px;
-        }
-        
-        .tab {
-            padding: 10px 15px;
-            cursor: pointer;
-            margin-right: 5px;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-        }
-        
-        .tab.active {
-            border-bottom: 2px solid var(--bitcoin-orange);
-            font-weight: 500;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .export-btn {
-            background-color: #6c757d;
-            margin-left: auto;
-        }
-        
-        .clear-btn {
-            background-color: #dc3545;
-        }
-        
-        /* Responsive adjustments */
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .flex-container {
-                flex-direction: column;
+            .header h1 {
+                font-size: 2.5rem;
             }
             
-            .controls {
-                flex-direction: column;
-                align-items: flex-start;
+            .header p {
+                font-size: 1.1rem;
             }
             
-            .block-info {
-                flex-direction: column;
+            .section {
+                padding: 30px 20px;
             }
             
-            .stats {
-                flex-direction: column;
+            .tools-grid {
+                grid-template-columns: 1fr;
             }
-            
-            .stat-box {
-                margin-bottom: 10px;
-            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 188, 212, 0.3);
+            border-top: 3px solid #00bcd4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1><span class="bitcoin-icon">₿</span> Bitcoin Bitmap Inscription Tracker</h1>
-        <div id="clock"></div>
-    </header>
-    
-    <div class="controls">
-        <button id="startBtn">Start Tracking</button>
-        <button id="stopBtn" disabled>Stop Tracking</button>
-        <button id="validateBtn" style="background-color: #28a745;">Verify Parser</button>
-        <div class="checkbox-container">
-            <input type="checkbox" id="autoUpdateCheckbox" checked>
-            <label for="autoUpdateCheckbox">Auto-update</label>
-        </div>
-        <div class="checkbox-container">
-            <label for="updateInterval">Check interval:</label>
-            <input type="number" id="updateInterval" min="30" max="300" value="60">
-            <span>seconds</span>
-        </div>
-        <div id="loadingIndicator" class="loading hidden">
-            <div class="spinner"></div>
-            <span id="loadingText">Processing...</span>
-        </div>
-    </div>
-    
-    <div class="block-info">
-        <div>Last checked block: <span id="lastBlockHeight">-</span></div>
-        <div>Last update time: <span id="lastUpdateTime">-</span></div>
-        <div>Next check in: <span id="nextCheckTime">-</span></div>
-    </div>
-    
-    <div class="stats">
-        <div class="stat-box">
-            <div class="stat-value" id="totalInscriptionsCount">0</div>
-            <div class="stat-label">Total Inscriptions</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-value" id="totalBlocksProcessed">0</div>
-            <div class="stat-label">Blocks Processed</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-value" id="lastBlockTxCount">0</div>
-            <div class="stat-label">Last Block Tx Count</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-value" id="newInscriptionsCount">0</div>
-            <div class="stat-label">New Inscriptions</div>
-        </div>
-    </div>
-    
-    <div class="flex-container">
-        <div class="left-panel">
-            <div class="panel">
-                <h2>Bitmap Inscriptions</h2>
-                <div class="tabs">
-                    <div class="tab active" data-tab="all">All Inscriptions</div>
-                    <div class="tab" data-tab="latest">Latest Block</div>
-                </div>
-                
-                <div class="tab-content active" id="tab-all">
-                    <div class="results-container" id="allInscriptionsContainer">
-                        <table id="allInscriptionsTable">
-                            <thead>
-                                <tr>
-                                    <th>Block</th>
-                                    <th>TXID</th>
-                                    <th>Bitmap</th>
-                                    <th>Time Found</th>
-                                </tr>
-                            </thead>
-                            <tbody id="allInscriptionsTableBody"></tbody>
-                        </table>
-                    </div>
-                    <div class="status-bar">
-                        <button id="exportBtn" class="export-btn">Export Data</button>
-                        <button id="clearBtn" class="clear-btn">Clear History</button>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="tab-latest">
-                    <div class="results-container" id="latestInscriptionsContainer">
-                        <table id="latestInscriptionsTable">
-                            <thead>
-                                <tr>
-                                    <th>Block</th>
-                                    <th>TXID</th>
-                                    <th>Bitmap</th>
-                                    <th>Time Found</th>
-                                </tr>
-                            </thead>
-                            <tbody id="latestInscriptionsTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="right-panel">
-            <div class="panel">
-                <h2>Process Log</h2>
-                <div class="log-container" id="log"></div>
-            </div>
-            
-            <div class="settings-panel">
-                <div class="settings-header" id="settingsHeader">
-                    <h3>Advanced Settings</h3>
-                    <span>▼</span>
-                </div>
-                <div class="settings-content" id="settingsContent">
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="saveHistoryCheckbox" checked>
-                        <label for="saveHistoryCheckbox">Save history in local storage</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="enableSoundCheckbox">
-                        <label for="enableSoundCheckbox">Play sound on new inscriptions</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="batchSizeCheckbox">
-                        <label for="batchSizeCheckbox">Custom batch size:</label>
-                        <input type="number" id="batchSize" min="25" max="1000" value="100">
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
     </div>
 
+    <div class="container">
+        <header class="header">
+            <h1>Bitcoin Ordinals & Bitmap Tools</h1>
+            <p>A comprehensive collection of tools for Bitcoin Ordinals, Bitmaps, and blockchain development</p>
+        </header>
+
+        <nav class="nav">
+
+            <a href="#bitmap-tech" class="nav-item">Bitmap Technology</a>
+            <a href="#3d-platform" class="nav-item">3D Platform</a>
+            <a href="#ord-tools" class="nav-item">Ord Tools</a>
+            <a href="#ordinals-tools" class="nav-item">Ordinals Tools</a>
+            <a href="#development" class="nav-item">Development</a>
+            <a href="#fonts" class="nav-item">Fonts</a>
+        </nav>
+
+        <section id="bitmap-tech" class="section">
+            <h2>Bitmap Technology</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>Simple Bitmap</h3>
+                    <p>A lightweight tool for visualizing bitmap data with clean, efficient rendering.</p>
+                    <a href="https://switch-900.github.io/SimpleBitmap/" target="_blank">View Tool</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Bitmap Nexus</h3>
+                    <p>Main project and Bapp to work with the Bitmap standard, creating a fully onchain experience.</p>
+                    <a href="https://www.bitmapnexus.com/" target="_blank">Launch Nexus</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Oodinals</h3>
+                    <p>A search tool for exploring ordinals on the Bitcoin blockchain. Will receive an upgrade with built-in inscriber.</p>
+                    <a href="https://www.oodinals.com/" target="_blank">Search Ordinals</a>
+                </div>
+                   <div class="tool-card">
+                    <h3>Bitoshi Explorer</h3>
+                    <p>A simple tool to view the number of Bitoshi's in a bitmap with an intuitive interface.</p>
+                    <a href="https://switch-900.github.io/Bitoshi-Explorer/" target="_blank">Explore Tool</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="3d-platform" class="section">
+            <h2>3D Bitmap Platform</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>3D Bitmap</h3>
+                    <p>A platform for rendering and visualizing three-dimensional bitmap with advanced graphics.</p>
+                    <a href="https://www.3dbitmap.com/" target="_blank">Enter 3D World</a>
+                </div>
+                <div class="tool-card">
+                    <h3>BitPaint</h3>
+                    <p>A creative tool for digital painting on bitmaps with intuitive brush controls.</p>
+                    <a href="https://www.3dbitmap.com/bitpaint" target="_blank">Start Painting</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Umbrel Integration</h3>
+                    <p>A comprehensive guide for integrating 3D Bitmap tools with Umbrel nodes.</p>
+                    <a href="https://www.3dbitmap.com/umbrel.html" target="_blank">View Guide</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="ord-tools" class="section">
+            <h2>Ord Tools</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>AirDrop YAML Generator</h3>
+                    <p>Simplifies the creation of YAML files for airdrops, enabling distribution of inscriptions to multiple addresses.</p>
+                    <a href="https://switch-900.github.io/AirDrop/" target="_blank">Generate YAML</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Parcel Sizer</h3>
+                    <p>Visualizes Bitcoin transaction parcel sizes within a block, inspired by Bitfeed's artistic representation.</p>
+                    <a href="https://switch-900.github.io/Parcel-Sizer/" target="_blank">Visualize Parcels</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Parcel Command Generator</h3>
+                    <p>Automates the creation of YAML configurations and shell commands for bitmap parcels.</p>
+                    <a href="https://switch-900.github.io/ParcelGenerator/" target="_blank">Generate Commands</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Batch Creator</h3>
+                    <p>Bitmap Parcel creator for NODE operations with batch processing capabilities.</p>
+                    <a href="https://switch-900.github.io/Batch-creator/" target="_blank">Create Batches</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="ordinals-tools" class="section">
+            <h2>Ordinals Tools</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>Ordinal Tree</h3>
+                    <p>Explore hierarchical structures of inscriptions and their children. Features content navigation, fullscreen mode, and ID copying.</p>
+                    <a href="https://ordinals.com/content/d6b2c108f6e2ba3f97cde7774d00dd75b2ee3f7c07740bb216b1b0f65f13d4cai0" target="_blank">Explore Tree</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Bitmap and Parcel Validator</h3>
+                    <p>Validates bitmaps and parcels on-chain using ordinal inscriptions for integrity verification.</p>
+                    <a href="https://ordinals.com/content/d3b049472e885b65ed0513a675c8e01a28fffe5eb8b347394168048390c8b14ci0" target="_blank">Validate Assets</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="development" class="section">
+            <h2>Development Tools</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>BITMAPSAT</h3>
+                    <p>A guide for setting up your digital canvas with features like reinscription updates, smart parcel activation, and real-time synchronization.</p>
+                    <a href="https://github.com/switch-900/BITMAPSAT" target="_blank">View Repository</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Combinio</h3>
+                    <p>Node.js script designed to aggregate all your project's code files into a single combined.txt file for AI code review.</p>
+                    <a href="https://github.com/switch-900/combinio" target="_blank">Get Script</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Blockamoto Concept Map</h3>
+                    <p>Conceptual mapping tool utilizing BITMAPSAT technology for blockchain visualization.</p>
+                    <a href="https://ordinals.com/content/bf50cd2f407491af43c2bb021536f8107c5426f19b26a65a6d6247e2de609ef1i0" target="_blank">View Concept</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="fonts" class="section">
+            <h2>Gotham Font Collection</h2>
+            <p style="margin-bottom: 30px; color: #cccccc;">Professional Gotham fonts stored as Bitcoin Ordinal inscriptions on the blockchain for permanent, decentralized access.</p>
+            <div class="font-grid">
+                <div class="font-card">
+                    <h3>Gotham Bold</h3>
+                    <div class="font-preview" style="font-weight: bold;">Gotham Bold</div>
+                    <a href="https://ordinals.com/inscription/0fba757d15ee4a8af1a7460f2e0306795d7da86b4170203619929e02974b1a41i0" target="_blank">View Inscription</a>
+                </div>
+                <div class="font-card">
+                    <h3>Gotham Regular</h3>
+                    <div class="font-preview">Gotham Regular</div>
+                    <a href="https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i1" target="_blank">View Inscription</a>
+                </div>
+                <div class="font-card">
+                    <h3>Gotham Italic</h3>
+                    <div class="font-preview" style="font-style: italic;">Gotham Italic</div>
+                    <a href="https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i0" target="_blank">View Inscription</a>
+                </div>
+                <div class="font-card">
+                    <h3>Gotham Italic Bold</h3>
+                    <div class="font-preview" style="font-weight: bold; font-style: italic;">Gotham Italic Bold</div>
+                    <a href="https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i2" target="_blank">View Inscription</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>Bitcoin Ordinals & Bitmap Tools Collection • Powered by Blockchain Technology</p>
+    </footer>
+
     <script>
-        // Constants
-        const BASE_URL = 'https://mempool.space/api';
-        const DEFAULT_UPDATE_INTERVAL = 60; // seconds
-        const DEFAULT_BATCH_SIZE = 100;
-        const STORAGE_KEY = 'bitcoin-bitmap-inscriptions';
-        const KNOWN_BITMAP_TXID = '3a0503d4fbdb4a709811392dba8d997f8485a9f8752f51fb6c012a207140ecdd';
-        
-        // State variables
-        let isTracking = false;
-        let updateTimer = null;
-        let processedBlocks = new Set();
-        let allInscriptions = [];
-        let latestBlockInscriptions = [];
-        let lastBlockHeight = null;
-        let lastUpdateTime = null;
-        let nextUpdateTime = null;
-        let processingBlock = false;
-        let blockProcessingWorker = null;
-        
-        // DOM Elements
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const validateBtn = document.getElementById('validateBtn');
-        const autoUpdateCheckbox = document.getElementById('autoUpdateCheckbox');
-        const updateIntervalInput = document.getElementById('updateInterval');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const loadingText = document.getElementById('loadingText');
-        const lastBlockHeightEl = document.getElementById('lastBlockHeight');
-        const lastUpdateTimeEl = document.getElementById('lastUpdateTime');
-        const nextCheckTimeEl = document.getElementById('nextCheckTime');
-        const totalInscriptionsCountEl = document.getElementById('totalInscriptionsCount');
-        const totalBlocksProcessedEl = document.getElementById('totalBlocksProcessed');
-        const lastBlockTxCountEl = document.getElementById('lastBlockTxCount');
-        const newInscriptionsCountEl = document.getElementById('newInscriptionsCount');
-        const allInscriptionsTableBody = document.getElementById('allInscriptionsTableBody');
-        const latestInscriptionsTableBody = document.getElementById('latestInscriptionsTableBody');
-        const logContainer = document.getElementById('log');
-        const clock = document.getElementById('clock');
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const exportBtn = document.getElementById('exportBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const settingsHeader = document.getElementById('settingsHeader');
-        const settingsContent = document.getElementById('settingsContent');
-        const saveHistoryCheckbox = document.getElementById('saveHistoryCheckbox');
-        const enableSoundCheckbox = document.getElementById('enableSoundCheckbox');
-        const batchSizeCheckbox = document.getElementById('batchSizeCheckbox');
-        const batchSizeInput = document.getElementById('batchSize');
-        
-        // Initialize Web Worker for processing (if supported)
-        function initWorker() {
-            if (window.Worker) {
-                const workerCode = `
-                    // Web Worker for processing Bitcoin transactions
-                    
-                    // Helper functions
-                    function hexToUtf8(hex) {
-                        try {
-                            const cleanHex = hex.startsWith('0x') ? hex.slice(2) : hex;
-                            const bytes = new Uint8Array(cleanHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-                            return new TextDecoder('utf-8').decode(bytes);
-                        } catch (error) {
-                            return '';
-                        }
-                    }
-                    
-                    function isBitmapInscription(str) {
-                        try {
-                            // Just check for ".bitmap" at the end
-                            return str.endsWith('.bitmap');
-                        } catch (error) {
-                            return false;
-                        }
-                    }
-                    
-                    function extractBitmap(str) {
-                        try {
-                            // Use regex to find a pattern that looks like a bitmap inscription
-                            // This pattern looks for numbers followed by .bitmap
-                            const match = str.match(/(\\d+\\.bitmap)/);
-                            return match ? match[1] : null;
-                        } catch (error) {
-                            return null;
-                        }
-                    }
-                    
-                    // Process a batch of transactions
-                    function processTransactions(transactions, blockHeight) {
-                        const bitmapInscriptions = [];
-                        let skippedTxs = 0;
-                        let processedTxs = 0;
-                        let malformedWitness = 0;
-                        
-                        for (const tx of transactions) {
-                            try {
-                                processedTxs++;
-                                
-                                // Process each input (vin) of the transaction
-                                if (!tx.vin || !Array.isArray(tx.vin)) {
-                                    skippedTxs++;
-                                    continue;
-                                }
-                                
-                                for (const input of tx.vin) {
-                                    // Check if witness data exists
-                                    if (input.witness && Array.isArray(input.witness)) {
-                                        for (const witnessItem of input.witness) {
-                                            // Skip if witnessItem is not a valid string
-                                            if (typeof witnessItem !== 'string') {
-                                                malformedWitness++;
-                                                continue;
-                                            }
-                                            
-                                            // Decode witness data from hex to UTF-8
-                                            const decodedWitness = hexToUtf8(witnessItem);
-                                            
-                                            // Skip if decoding failed or result is empty
-                                            if (!decodedWitness) {
-                                                continue;
-                                            }
-                                            
-                                            // Check if it's a bitmap inscription
-                                            if (isBitmapInscription(decodedWitness)) {
-                                                const bitmap = extractBitmap(decodedWitness);
-                                                if (bitmap) {
-                                                    bitmapInscriptions.push({
-                                                        txid: tx.txid,
-                                                        block_height: blockHeight,
-                                                        bitmap: bitmap,
-                                                        timestamp: new Date().toISOString()
-                                                    });
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            } catch (error) {
-                                skippedTxs++;
-                            }
-                        }
-                        
-                        return {
-                            inscriptions: bitmapInscriptions,
-                            stats: {
-                                processedTxs,
-                                skippedTxs,
-                                malformedWitness
-                            }
-                        };
-                    }
-                    
-                    // Main message handler
-                    onmessage = function(e) {
-                        const { transactions, blockHeight, type } = e.data;
-                        
-                        if (type === 'process') {
-                            // Process transactions and return results
-                            const result = processTransactions(transactions, blockHeight);
-                            postMessage({
-                                type: 'result',
-                                inscriptions: result.inscriptions,
-                                stats: result.stats,
-                                total: transactions.length
-                            });
-                        }
-                    };
-                `;
-                
-                // Create a blob from the worker code
-                const blob = new Blob([workerCode], { type: 'application/javascript' });
-                const workerUrl = URL.createObjectURL(blob);
-                
-                blockProcessingWorker = new Worker(workerUrl);
-                
-                // Set up message handler
-                blockProcessingWorker.onmessage = function(e) {
-                    const { type, inscriptions, stats, total } = e.data;
-                    
-                    if (type === 'result') {
-                        // Handle the processed batch results
-                        handleProcessedInscriptions(inscriptions, stats, total);
-                    }
-                };
-                
-                log('Web Worker initialized for parallel processing');
-            } else {
-                log('Web Workers not supported in this browser. Processing will be slower.');
-            }
-        }
-        
-        // Logging function
-        function log(message) {
-            const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
-            logContainer.innerHTML += `[${timestamp}] ${message}\n`;
-            logContainer.scrollTop = logContainer.scrollHeight;
-        }
-        
-        // Format date for display
-        function formatDate(dateStr) {
-            if (!dateStr) return '-';
-            const date = new Date(dateStr);
-            return date.toLocaleTimeString();
-        }
-        
-        // Update the UI clock
-        function updateClock() {
-            const now = new Date();
-            clock.textContent = now.toLocaleString();
-        }
-        
-        // Load saved data from localStorage
-        function loadSavedData() {
-            try {
-                const savedData = localStorage.getItem(STORAGE_KEY);
-                if (savedData) {
-                    const data = JSON.parse(savedData);
-                    allInscriptions = data.inscriptions || [];
-                    processedBlocks = new Set(data.processedBlocks || []);
-                    lastBlockHeight = data.lastBlockHeight;
-                    
-                    updateInscriptionsTable();
-                    updateStats();
-                    
-                    log(`Loaded ${allInscriptions.length} inscriptions from storage`);
-                }
-            } catch (error) {
-                log(`Error loading saved data: ${error.message}`);
-            }
-        }
-        
-        // Save data to localStorage
-        function saveData() {
-            if (!saveHistoryCheckbox.checked) return;
-            
-            try {
-                const dataToSave = {
-                    inscriptions: allInscriptions,
-                    processedBlocks: Array.from(processedBlocks),
-                    lastBlockHeight
-                };
-                
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-            } catch (error) {
-                log(`Error saving data: ${error.message}`);
-            }
-        }
-        
-        // Update tables with current data
-        function updateInscriptionsTable() {
-            // Update all inscriptions table
-            allInscriptionsTableBody.innerHTML = '';
-            
-            // Sort inscriptions by timestamp (newest first)
-            const sortedInscriptions = [...allInscriptions].sort((a, b) => {
-                return new Date(b.timestamp) - new Date(a.timestamp);
-            });
-            
-            for (const inscription of sortedInscriptions) {
-                const row = document.createElement('tr');
-                
-                // Truncate TXID for display
-                const txidShort = `${inscription.txid.substring(0, 8)}...${inscription.txid.substring(inscription.txid.length - 8)}`;
-                
-                row.innerHTML = `
-                    <td>${inscription.block_height}</td>
-                    <td title="${inscription.txid}">${txidShort}</td>
-                    <td>${inscription.bitmap}</td>
-                    <td>${formatDate(inscription.timestamp)}</td>
-                `;
-                
-                allInscriptionsTableBody.appendChild(row);
-            }
-            
-            // Update latest inscriptions table
-            latestInscriptionsTableBody.innerHTML = '';
-            
-            for (const inscription of latestBlockInscriptions) {
-                const row = document.createElement('tr');
-                
-                // Truncate TXID for display
-                const txidShort = `${inscription.txid.substring(0, 8)}...${inscription.txid.substring(inscription.txid.length - 8)}`;
-                
-                row.innerHTML = `
-                    <td>${inscription.block_height}</td>
-                    <td title="${inscription.txid}">${txidShort}</td>
-                    <td>${inscription.bitmap}</td>
-                    <td>${formatDate(inscription.timestamp)}</td>
-                `;
-                
-                latestInscriptionsTableBody.appendChild(row);
-            }
-        }
-        
-        // Update statistics display
-        function updateStats() {
-            totalInscriptionsCountEl.textContent = allInscriptions.length;
-            totalBlocksProcessedEl.textContent = processedBlocks.size;
-            newInscriptionsCountEl.textContent = latestBlockInscriptions.length;
-        }
-        
-        // Update status display
-        function updateStatus() {
-            lastBlockHeightEl.textContent = lastBlockHeight || '-';
-            lastUpdateTimeEl.textContent = lastUpdateTime ? formatDate(lastUpdateTime) : '-';
-            
-            if (nextUpdateTime && isTracking) {
-                const now = new Date().getTime();
-                const diff = Math.max(0, Math.round((nextUpdateTime - now) / 1000));
-                nextCheckTimeEl.textContent = `${diff} seconds`;
-            } else {
-                nextCheckTimeEl.textContent = '-';
-            }
-        }
-        
-        /**
-         * Fetches the latest Bitcoin block from mempool.space API
-         * @returns {Promise<Object>} Latest block data
-         */
-        async function getLatestBlock() {
-            try {
-                log('Fetching latest block...');
-                const response = await fetch(`${BASE_URL}/blocks`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                // The API returns blocks in descending order, so the first one is the latest
-                const latestBlock = data[0];
-                log(`Latest block fetched: #${latestBlock.height}`);
-                return latestBlock;
-            } catch (error) {
-                log(`Error fetching latest block: ${error.message}`);
-                throw error;
-            }
-        }
-        
-        /**
-         * Fetches transactions for a given block hash in batches
-         * @param {string} blockHash - The hash of the block to fetch transactions for
-         * @returns {Promise<Array>} Array of transaction objects
-         */
-        async function getBlockTransactions(blockHash) {
-            try {
-                let allTransactions = [];
-                let index = 0;
-                let hasMore = true;
-                let batchSize = batchSizeCheckbox.checked ? parseInt(batchSizeInput.value) : DEFAULT_BATCH_SIZE;
-                
-                log(`Fetching transactions in batches of ${batchSize}...`);
-                loadingText.textContent = 'Fetching transactions...';
-                
-                // Handle pagination with parallel fetches for efficiency
-                while (hasMore) {
-                    log(`Fetching batch starting at index: ${index}`);
-                    const response = await fetch(`${BASE_URL}/block/${blockHash}/txs?start=${index}`);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    
-                    const transactions = await response.json();
-                    
-                    if (transactions.length === 0) {
-                        hasMore = false;
-                    } else {
-                        // Process this batch while fetching the next one
-                        processTransactionBatch(transactions, lastBlockHeight);
-                        
-                        allTransactions = allTransactions.concat(transactions);
-                        index += transactions.length;
-                        log(`Fetched ${transactions.length} transactions. Total so far: ${allTransactions.length}`);
-                        loadingText.textContent = `Processing ${allTransactions.length} transactions...`;
-                    }
-                }
-                
-                lastBlockTxCountEl.textContent = allTransactions.length;
-                return allTransactions;
-            } catch (error) {
-                log(`Error fetching transactions for block ${blockHash}: ${error.message}`);
-                throw error;
-            }
-        }
-        
-        /**
-         * Process a batch of transactions using Web Worker if available
-         * @param {Array} transactions - Batch of transactions to process
-         * @param {number} blockHeight - Height of the current block
-         */
-        function processTransactionBatch(transactions, blockHeight) {
-            if (blockProcessingWorker) {
-                // Use Web Worker for parallel processing
-                blockProcessingWorker.postMessage({
-                    type: 'process',
-                    transactions: transactions,
-                    blockHeight: blockHeight
-                });
-            } else {
-                // Fallback to in-thread processing
-                const result = processTransactionsInThread(transactions, blockHeight);
-                handleProcessedInscriptions(result.inscriptions, result.stats, transactions.length);
-            }
-        }
-        
-        /**
-         * Process transactions in the main thread (fallback if Web Workers not available)
-         * @param {Array} transactions - Transactions to process
-         * @param {number} blockHeight - Block height
-         * @returns {Object} Processing results
-         */
-        function processTransactionsInThread(transactions, blockHeight) {
-            const bitmapInscriptions = [];
-            let skippedTxs = 0;
-            let processedTxs = 0;
-            let malformedWitness = 0;
-            
-            for (const tx of transactions) {
-                try {
-                    processedTxs++;
-                    
-                    // Process each input (vin) of the transaction
-                    if (!tx.vin || !Array.isArray(tx.vin)) {
-                        skippedTxs++;
-                        continue;
-                    }
-                    
-                    for (const input of tx.vin) {
-                        // Check if witness data exists
-                        if (input.witness && Array.isArray(input.witness)) {
-                            for (const witnessItem of input.witness) {
-                                // Skip if witnessItem is not a valid string
-                                if (typeof witnessItem !== 'string') {
-                                    malformedWitness++;
-                                    continue;
-                                }
-                                
-                                // Decode witness data from hex to UTF-8
-                                const decodedWitness = hexToUtf8(witnessItem);
-                                
-                                // Skip if decoding failed or result is empty
-                                if (!decodedWitness) {
-                                    continue;
-                                }
-                                
-                                // Check if it's a bitmap inscription
-                                if (isBitmapInscription(decodedWitness)) {
-                                    const bitmap = extractBitmap(decodedWitness);
-                                    if (bitmap) {
-                                        bitmapInscriptions.push({
-                                            txid: tx.txid,
-                                            block_height: blockHeight,
-                                            bitmap: bitmap,
-                                            timestamp: new Date().toISOString()
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (error) {
-                    skippedTxs++;
-                }
-            }
-            
-            return {
-                inscriptions: bitmapInscriptions,
-                stats: {
-                    processedTxs,
-                    skippedTxs,
-                    malformedWitness
-                }
-            };
-        }
-        
-        /**
-         * Handle processed inscription results
-         * @param {Array} inscriptions - New inscriptions found
-         * @param {Object} stats - Processing statistics
-         * @param {number} total - Total transactions processed
-         */
-        function handleProcessedInscriptions(inscriptions, stats, total) {
-            // Add new inscriptions to our collections
-            if (inscriptions.length > 0) {
-                // Add to latest block inscriptions
-                latestBlockInscriptions = latestBlockInscriptions.concat(inscriptions);
-                
-                // Add to all inscriptions, avoiding duplicates
-                for (const inscription of inscriptions) {
-                    // Check if we already have this inscription (by txid)
-                    const exists = allInscriptions.some(i => i.txid === inscription.txid);
-                    if (!exists) {
-                        allInscriptions.push(inscription);
-                    }
-                }
-                
-                log(`Found ${inscriptions.length} bitmap inscriptions in this batch`);
-                
-                // Play sound if enabled
-                if (enableSoundCheckbox.checked && inscriptions.length > 0) {
-                    playNotificationSound();
-                }
-                
-                // Update UI
-                updateInscriptionsTable();
-                updateStats();
-                saveData();
-            }
-        }
-        
-        /**
-         * Converts a hex string to a UTF-8 string
-         * @param {string} hex - The hex string to convert
-         * @returns {string} The UTF-8 string, or empty string if conversion fails
-         */
-        function hexToUtf8(hex) {
-            try {
-                // Remove '0x' prefix if present
-                const cleanHex = hex.startsWith('0x') ? hex.slice(2) : hex;
-                
-                // Convert hex to bytes
-                const bytes = new Uint8Array(cleanHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-                
-                // Convert bytes to UTF-8 string
-                return new TextDecoder('utf-8').decode(bytes);
-            } catch (error) {
-                // If there's an error in decoding, return an empty string
-                return '';
-            }
-        }
-        
-        /**
-         * Checks if a string represents a bitmap inscription
-         * @param {string} str - The string to check
-         * @returns {boolean} True if the string is a bitmap inscription, false otherwise
-         */
-        function isBitmapInscription(str) {
-            try {
-                // Just check for .bitmap at the end
-                return str.endsWith('.bitmap');
-            } catch (error) {
-                return false;
-            }
-        }
-        
-        /**
-         * Extracts the bitmap value from an inscription string
-         * @param {string} str - The inscription string
-         * @returns {string|null} The bitmap value (e.g., "896543.bitmap"), or null if not found
-         */
-        function extractBitmap(str) {
-            try {
-                // Use regex to find a pattern that looks like a bitmap inscription
-                // This pattern looks for numbers followed by .bitmap
-                const match = str.match(/(\d+\.bitmap)/);
-                return match ? match[1] : null;
-            } catch (error) {
-                log(`Error extracting bitmap: ${error.message}`);
-                return null;
-            }
-        }
-        
-        /**
-         * Play a notification sound
-         */
-        function playNotificationSound() {
-            try {
-                // Create an AudioContext
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                // Configure sound
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5
-                
-                // Configure volume
-                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                // Connect nodes
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                // Play sound
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (error) {
-                // Silently fail if audio cannot be played
-            }
-        }
-        
-        /**
-         * Main function that finds all bitmap inscriptions in the latest block
-         */
-        async function findBitmapInscriptions() {
-            if (processingBlock) {
-                log('Already processing a block. Skipping this check.');
-                return;
-            }
-            
-            try {
-                processingBlock = true;
-                loadingIndicator.classList.remove('hidden');
-                
-                // Reset latest block inscriptions
-                latestBlockInscriptions = [];
-                
-                // Step 1: Get the latest block
-                const latestBlock = await getLatestBlock();
-                
-                // Step 2: Check if we've already processed this block
-                if (processedBlocks.has(latestBlock.height)) {
-                    log(`Block #${latestBlock.height} already processed. Waiting for next block...`);
-                    loadingIndicator.classList.add('hidden');
-                    processingBlock = false;
-                    return;
-                }
-                
-                // Update state with latest block info
-                lastBlockHeight = latestBlock.height;
-                lastUpdateTime = new Date().toISOString();
-                updateStatus();
-                
-                log(`Processing block #${latestBlock.height} (${latestBlock.id})...`);
-                
-                // Step 3: Get and process all transactions from the block
-                await getBlockTransactions(latestBlock.id);
-                
-                // Step 4: Mark block as processed
-                processedBlocks.add(latestBlock.height);
-                
-                // Step 5: Update displays
-                updateStats();
-                updateStatus();
-                saveData();
-                
-                log(`Block #${latestBlock.height} processing complete. Found ${latestBlockInscriptions.length} bitmap inscriptions.`);
-            } catch (error) {
-                log(`Error processing block: ${error.message}`);
-            } finally {
-                loadingIndicator.classList.add('hidden');
-                processingBlock = false;
-            }
-        }
-        
-        /**
-         * Validate bitmap parser with a known bitmap inscription transaction
-         */
-        async function validateBitmapParser() {
-            try {
-                log('Starting parser validation with known bitmap transaction...');
-                loadingIndicator.classList.remove('hidden');
-                loadingText.textContent = 'Validating parser...';
-                
-                // Known bitmap inscription transaction ID
-                const knownTxid = KNOWN_BITMAP_TXID;
-                log(`Fetching known bitmap transaction: ${knownTxid}`);
-                
-                // Fetch the transaction
-                const response = await fetch(`${BASE_URL}/tx/${knownTxid}`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                
-                const tx = await response.json();
-                log(`Transaction fetched. Checking for bitmap inscriptions...`);
-                
-                // Debug variables
-                let foundWitness = 0;
-                let decodedItems = 0;
-                let possibleInscriptions = 0;
-                
-                // Process all inputs
-                for (const input of tx.vin) {
-                    // Validate if witness data exists
-                    if (input.witness && Array.isArray(input.witness)) {
-                        foundWitness++;
-                        log(`Found witness data in input ${foundWitness}`);
-                        
-                        // Log the witness data for debugging
-                        log(`Found ${input.witness.length} witness items`);
-                        
-                        for (let i = 0; i < input.witness.length; i++) {
-                            const witnessItem = input.witness[i];
-                            
-                            // Skip if not a string
-                            if (typeof witnessItem !== 'string') {
-                                log(`Witness item ${i} is not a string. Type: ${typeof witnessItem}`);
-                                continue;
-                            }
-                            
-                            // Log first 50 chars of hex for debugging
-                            const hexPreview = witnessItem.length > 50 
-                                ? `${witnessItem.substring(0, 50)}...` 
-                                : witnessItem;
-                            log(`Witness item ${i} (${witnessItem.length} chars): ${hexPreview}`);
-                            
-                            // Try to decode
-                            const decodedWitness = hexToUtf8(witnessItem);
-                            decodedItems++;
-                            
-                            // Skip if decoding failed
-                            if (!decodedWitness) {
-                                log(`Decoding witness item ${i} failed or resulted in empty string`);
-                                continue;
-                            }
-                            
-                            // Check if it contains some indication of being an inscription
-                            if (decodedWitness.includes('ord')) {
-                                possibleInscriptions++;
-                                log(`Possible inscription found in witness item ${i}`);
-                                
-                                // First 100 chars for debugging
-                                const textPreview = decodedWitness.length > 100 
-                                    ? `${decodedWitness.substring(0, 100).replace(/\n/g, ' ')}...` 
-                                    : decodedWitness.replace(/\n/g, ' ');
-                                log(`Decoded content preview: ${textPreview}`);
-                                
-                                // Check specifically for bitmap
-                                if (isBitmapInscription(decodedWitness)) {
-                                    const bitmap = extractBitmap(decodedWitness);
-                                    if (bitmap) {
-                                        log(`✅ SUCCESS: Found bitmap inscription: ${bitmap}`);
-                                        
-                                        // Add to our collections for display
-                                        const inscription = {
-                                            txid: knownTxid,
-                                            block_height: tx.status.block_height,
-                                            bitmap: bitmap,
-                                            timestamp: new Date().toISOString()
-                                        };
-                                        
-                                        latestBlockInscriptions = [inscription];
-                                        
-                                        // Check if we already have this
-                                        const exists = allInscriptions.some(i => i.txid === knownTxid);
-                                        if (!exists) {
-                                            allInscriptions.push(inscription);
-                                        }
-                                        
-                                        // Update display
-                                        updateInscriptionsTable();
-                                        updateStats();
-                                        
-                                        // Play sound if enabled
-                                        if (enableSoundCheckbox.checked) {
-                                            playNotificationSound();
-                                        }
-                                        
-                                        return;
-                                    }
-                                } else {
-                                    log(`Not a bitmap inscription (doesn't end with .bitmap)`);
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                // If we get here, no bitmap inscription was found
-                log(`❌ ERROR: No bitmap inscription found in transaction ${knownTxid}`);
-                log(`Debug info: Found ${foundWitness} inputs with witness data, decoded ${decodedItems} items, found ${possibleInscriptions} possible inscriptions`);
-                
-                // Update isBitmapInscription function to be more lenient for debugging
-                log(`Trying more lenient bitmap detection...`);
-                
-                for (const input of tx.vin) {
-                    if (input.witness && Array.isArray(input.witness)) {
-                        for (const witnessItem of input.witness) {
-                            if (typeof witnessItem !== 'string') continue;
-                            
-                            const decodedWitness = hexToUtf8(witnessItem);
-                            if (!decodedWitness) continue;
-                            
-                            // More lenient check - just look for related content
-                            if (decodedWitness.endsWith('.bitmap')) {
-                                log(`✅ Found with lenient check (just .bitmap): ${decodedWitness.slice(-20)}`);
-                            } else if (decodedWitness.includes('.bitmap')) {
-                                log(`✅ Found .bitmap in content: ${decodedWitness.slice(decodedWitness.indexOf('.bitmap') - 10, decodedWitness.indexOf('.bitmap') + 10)}`);
-                            } else if (decodedWitness.includes('bitmap')) {
-                                log(`Found 'bitmap' in content`);
-                            } else if (decodedWitness.includes('ord')) {
-                                log(`Found 'ord' in content`);
-                            }
-                        }
-                    }
-                }
-                
-            } catch (error) {
-                log(`Error validating parser: ${error.message}`);
-            } finally {
-                loadingIndicator.classList.add('hidden');
-                log('Validation process completed.');
-            }
-        }
-        
-        /**
-         * Start auto-updating
-         */
-        function startTracking() {
-            if (isTracking) return;
-            
-            isTracking = true;
-            startBtn.disabled = true;
-            stopBtn.disabled = false;
-            
-            // Perform initial check
-            findBitmapInscriptions();
-            
-            // Set up periodic checks
-            scheduleNextUpdate();
-            
-            log('Started tracking bitmap inscriptions');
-        }
-        
-        /**
-         * Stop auto-updating
-         */
-        function stopTracking() {
-            if (!isTracking) return;
-            
-            isTracking = false;
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            
-            // Clear timer
-            if (updateTimer) {
-                clearTimeout(updateTimer);
-                updateTimer = null;
-            }
-            
-            nextUpdateTime = null;
-            updateStatus();
-            
-            log('Stopped tracking bitmap inscriptions');
-        }
-        
-        /**
-         * Schedule the next update
-         */
-        function scheduleNextUpdate() {
-            if (!isTracking || !autoUpdateCheckbox.checked) return;
-            
-            // Clear existing timer
-            if (updateTimer) {
-                clearTimeout(updateTimer);
-            }
-            
-            // Get interval from input
-            const interval = parseInt(updateIntervalInput.value) * 1000;
-            
-            // Schedule next update
-            updateTimer = setTimeout(() => {
-                findBitmapInscriptions().then(() => {
-                    if (isTracking) {
-                        scheduleNextUpdate();
-                    }
-                });
-            }, interval);
-            
-            // Update next check time
-            nextUpdateTime = new Date().getTime() + interval;
-            updateStatus();
-        }
-        
-        /**
-         * Export current data as JSON file
-         */
-        function exportData() {
-            try {
-                const dataToExport = {
-                    inscriptions: allInscriptions,
-                    exportTime: new Date().toISOString(),
-                    totalBlocks: processedBlocks.size,
-                    blockHeights: Array.from(processedBlocks)
-                };
-                
-                const dataStr = JSON.stringify(dataToExport, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `bitcoin-bitmap-inscriptions-${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                log('Exported data to JSON file');
-            } catch (error) {
-                log(`Error exporting data: ${error.message}`);
-            }
-        }
-        
-        /**
-         * Clear all stored history
-         */
-        function clearHistory() {
-            if (confirm('Are you sure you want to clear all history? This cannot be undone.')) {
-                allInscriptions = [];
-                latestBlockInscriptions = [];
-                processedBlocks = new Set();
-                lastBlockHeight = null;
-                lastUpdateTime = null;
-                
-                updateInscriptionsTable();
-                updateStats();
-                updateStatus();
-                saveData();
-                
-                log('Cleared all history');
-            }
-        }
-        
-        // Event listeners
-        startBtn.addEventListener('click', startTracking);
-        stopBtn.addEventListener('click', stopTracking);
-        validateBtn.addEventListener('click', validateBitmapParser);
-        autoUpdateCheckbox.addEventListener('change', () => {
-            if (autoUpdateCheckbox.checked && isTracking) {
-                scheduleNextUpdate();
-            } else if (!autoUpdateCheckbox.checked && updateTimer) {
-                clearTimeout(updateTimer);
-                updateTimer = null;
-                nextUpdateTime = null;
-                updateStatus();
-            }
+        // Loading animation
+        window.addEventListener('load', function() {
+            const loading = document.getElementById('loading');
+            setTimeout(() => {
+                loading.classList.add('hidden');
+            }, 1000);
         });
-        updateIntervalInput.addEventListener('change', () => {
-            // Validate interval
-            let interval = parseInt(updateIntervalInput.value);
-            if (isNaN(interval) || interval < 30) {
-                interval = 30;
-                updateIntervalInput.value = interval;
-            } else if (interval > 300) {
-                interval = 300;
-                updateIntervalInput.value = interval;
-            }
-            
-            // Reschedule if tracking
-            if (isTracking && autoUpdateCheckbox.checked) {
-                scheduleNextUpdate();
-            }
-        });
-        exportBtn.addEventListener('click', exportData);
-        clearBtn.addEventListener('click', clearHistory);
-        
-        // Tab switching
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs
-                tabs.forEach(t => t.classList.remove('active'));
-                tabContents.forEach(tc => tc.classList.remove('active'));
-                
-                // Add active class to clicked tab
-                tab.classList.add('active');
-                
-                // Show corresponding content
-                const tabId = tab.getAttribute('data-tab');
-                document.getElementById(`tab-${tabId}`).classList.add('active');
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
-        
-        // Settings toggle
-        settingsHeader.addEventListener('click', () => {
-            settingsContent.classList.toggle('visible');
-            const arrow = settingsHeader.querySelector('span');
-            arrow.textContent = settingsContent.classList.contains('visible') ? '▲' : '▼';
+
+        // Add scroll effect to sections
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
         });
-        
-        // Initialize
-        function initialize() {
-            // Set up clock
-            updateClock();
-            setInterval(updateClock, 1000);
-            
-            // Set up status updater
-            setInterval(updateStatus, 1000);
-            
-            // Load saved data
-            loadSavedData();
-            
-            // Initialize Web Worker
-            initWorker();
-            
-            log('Application initialized. Click "Start Tracking" to begin.');
-        }
-        
-        // Start the application
-        initialize();
+
+        // Add parallax effect to header
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const header = document.querySelector('.header');
+            if (header) {
+                header.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
     </script>
 </body>
 </html>
