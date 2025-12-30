@@ -98,11 +98,119 @@
             pointer-events: none;
         }
 
-        .hero-content {
-            max-width: 900px;
-            margin: 0 auto;
+        /* Image Showcase Grid */
+        .showcase-grid {
+            max-width: 1400px;
+            margin: 0 auto 60px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            padding: 0 20px;
             position: relative;
             z-index: 1;
+        }
+
+        .showcase-item {
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            opacity: 0;
+            animation: fadeInScale 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Stagger animation for showcase items */
+        .showcase-item:nth-child(1) { animation-delay: 0.1s; }
+        .showcase-item:nth-child(2) { animation-delay: 0.15s; }
+        .showcase-item:nth-child(3) { animation-delay: 0.2s; }
+        .showcase-item:nth-child(4) { animation-delay: 0.05s; }
+        .showcase-item:nth-child(5) { animation-delay: 0.1s; }
+        .showcase-item:nth-child(6) { animation-delay: 0.15s; }
+        .showcase-item:nth-child(7) { animation-delay: 0.2s; }
+        .showcase-item:nth-child(8) { animation-delay: 0.25s; }
+        .showcase-item:nth-child(9) { animation-delay: 0.3s; }
+        .showcase-item:nth-child(10) { animation-delay: 0.35s; }
+        .showcase-item:nth-child(11) { animation-delay: 0.4s; }
+        .showcase-item:nth-child(12) { animation-delay: 0.45s; }
+        .showcase-item:nth-child(13) { animation-delay: 0.5s; }
+        .showcase-item:nth-child(14) { animation-delay: 0.55s; }
+        .showcase-item:nth-child(15) { animation-delay: 0.6s; }
+        .showcase-item:nth-child(16) { animation-delay: 0.65s; }
+        .showcase-item:nth-child(17) { animation-delay: 0.7s; }
+
+        .showcase-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .showcase-item:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(247, 147, 26, 0.3);
+            z-index: 10;
+        }
+
+        .showcase-item:hover img {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        /* Featured larger items */
+        .showcase-item.large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        @media (max-width: 1024px) {
+            .showcase-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .showcase-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .showcase-item.large {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .showcase-label {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
 
         .hero-title {
@@ -574,6 +682,65 @@
                 Switch-900 - Building Bitcoin Ordinals infrastructure, Bitmap technology, and on-chain inscription systems. 
                 Creating tools that work entirely on Bitcoin with no centralized servers. Any inscription can be displayed as an iframe in these apps.
             </p>
+        </div>
+
+        <!-- Project Showcase Grid -->
+        <div class="showcase-label">Project Showcase</div>
+        <div class="showcase-grid">
+            <!-- Featured larger items -->
+            <div class="showcase-item large">
+                <img src="screenshots/oodianls.png" alt="Oodinals">
+            </div>
+            <div class="showcase-item large">
+                <img src="screenshots/oodinalsloader_png.png" alt="OodinalsLoader">
+            </div>
+            <div class="showcase-item large">
+                <img src="screenshots/nexus-ocw.png" alt="Nexus OCW">
+            </div>
+            
+            <!-- Regular items -->
+            <div class="showcase-item">
+                <img src="screenshots/Gemerator.png" alt="Gemerator">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/bitmapnexuswhitelist.png" alt="BitmapNexus">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/punkling.png" alt="Punklings">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/bitmapwallet.png" alt="Bitmap Wallet">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/nexusbitmap.png" alt="Nexus Bitmap">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/NexusBuilder.png" alt="Nexus Builder">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/nexus2.png" alt="Nexus 2">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/bitmapparcelvalidator.png" alt="Validator">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/bitoshviewer.png" alt="Bitoshi Explorer">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/simplebitmap.png" alt="Simple Bitmap">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/3dBitmap.png" alt="3D Bitmap">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/bitpaint.png" alt="BitPaint">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/bitcoin2bitmap.png" alt="Bitcoin2Bitmap">
+            </div>
+            <div class="showcase-item">
+                <img src="screenshots/ConceptMap.png" alt="Concept Map">
+            </div>
         </div>
     </section>
 
