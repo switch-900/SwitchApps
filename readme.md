@@ -1,92 +1,221 @@
-# A bunch of things that may help ya. Bitmap and ordainals. 
+# Switch-900 - Bitcoin Ordinals & Bitmap Tools
 
-## Blockchain Tools
+A comprehensive collection of tools for Bitcoin Ordinals, Bitmaps, and blockchain development. All tools focused on creating truly decentralized, on-chain experiences.
 
-- [Bitoshi Explorer](https://switch-900.github.io/Bitoshi-Explorer/)  
-  A simple to to view the number of Bitoshi's in a bitmap.
+---
 
-## Bitmap Technology
+## 🚀 Main Apps in Development
 
-- [Simple Bitmap](https://switch-900.github.io/SimpleBitmap/)  
-  A lightweight tool for visualising bitmap.
-- [Bitmap Nexus](https://www.bitmapnexus.com/)  
-  Nexus is my main project and an Bapp to work with the Bitmap standard creating a fully onchain experience.  
-- [Oodinals](https://www.oodinals.com/)  
-  A search tool for exploring ordinals on the Bitcoin blockchain. This will get an upgrade with a built in inscriber. 
+### BitmapNexus - The On-Chain Bitmap Experience
+Nexus is my main project and Bapp to work with the Bitmap standard, creating a fully on-chain experience. A comprehensive platform for building, managing, and interacting with your Bitmap parcels directly on Bitcoin.
 
-## 3D Bitmap Platform
+**Features:**
+- Nexus Builder for 3D modeling
+- NexusBitmap for visualization  
+- Complete parcel management
+- Real-time on-chain data
 
-- [3D Bitmap](https://www.3dbitmap.com/)  
-  A platform for rendering and visualizing three-dimensional bitmap. 
-  - [BitPaint](https://www.3dbitmap.com/bitpaint)  
-    A creative tool for digital painting on bitmaps.
-  - [Umbrel Integration](https://www.3dbitmap.com/umbrel.html)  
-    A guide for integrating 3D Bitmap tools with Umbrel nodes.
+🔗 **Visit:** [https://www.bitmapnexus.com/](https://www.bitmapnexus.com/)
 
-## Ord Tools 
+---
 
-- [AirDrop YAML Generator](https://switch-900.github.io/AirDrop/)  
-  Simplifies the creation of YAML files for airdrops, enabling distribution of inscriptions to multiple addresses.
-- [Parcel Sizer](https://switch-900.github.io/Parcel-Sizer/)  
-  Visualizes Bitcoin transaction parcel sizes within a block, inspired by Bitfeed's artistic representation.
-- [Parcel Command Generator](https://switch-900.github.io/ParcelGenerator/)  
-  Automates the creation of YAML configurations and shell commands for bitmap parcels.
+### Punklings
+Bringing properties to your Bitmap Punks and bringing them to life. An interactive experience that adds dynamic characteristics and functionality to your Punk ordinals, creating a living ecosystem on Bitcoin.
 
-## Ordinals Tools
+🔗 **Status:** In Development
 
-- [Ordinal Tree](https://ordinals.com/content/d6b2c108f6e2ba3f97cde7774d00dd75b2ee3f7c07740bb216b1b0f65f13d4cai0)  
-  Explore hierarchical structures of inscriptions and their children. Features include content navigation, fullscreen mode, and ID copying.
-- [Bitmap and Parcel Validator](https://ordinals.com/content/d3b049472e885b65ed0513a675c8e01a28fffe5eb8b347394168048390c8b14ci0)  
-  Validates bitmaps and parcels on-chain using ordinal inscriptions.
+---
 
-## BITMAPSAT
+### Bitmap Wallet
+A fully client-side wallet that manages ordinal assets in a unique way. Purpose-built for Bitmap and ordinal inscriptions, providing specialized tools for viewing, organizing, and interacting with your on-chain assets without any backend dependencies.
 
-- [BITMAPSAT Repository](https://github.com/switch-900/BITMAPSAT)  
-  A guide for setting up your digital canvas with features like reinscription updates, smart parcel activation, and real-time synchronization.
-- Used in [Blockamoto Concept Map](https://ordinals.com/content/bf50cd2f407491af43c2bb021536f8107c5426f19b26a65a6d6247e2de609ef1i0).
-- 
-## Combinio https://github.com/switch-900/combinio
-Combinio is a Node.js script designed to aggregate all your project’s code files into a single combined.txt file. This is particularly useful for utilizing AI tools to review your code structure or for creating a consolidated view of your project.
+🔗 **Status:** In Development
 
-https://switch-900.github.io/AirDrop/
-Airdrop YAML Generator
-This project provides a simple web-based tool to generate YAML files required for airdrop operations on an Ordinal node, such as one running on an Umbrel node.
+---
 
-Purpose
-The tool is designed to simplify the process of creating YAML files for airdrops by allowing users to input the necessary details and automatically generating the required files. These YAML files can then be used with Ordinal nodes to distribute inscriptions to multiple destination addresses. 
+## ⚡ Featured Infrastructure
 
-Bitmap Parcel creator for a NODE 
-https://switch-900.github.io/Batch-creator/
+### Oodinals - Full Inscription Platform
+Complete inscription toolkit stored entirely on-chain. Create parent-child inscriptions, delegations, pointers, galleries, and more - all from within an inscription. The ultimate on-chain inscriber that requires no backend infrastructure.
 
-Fonts: 
-Gotham Font Collection
-This repository contains links to the Gotham font family variants stored as Bitcoin Ordinal inscriptions.
+- **Sat:** 1247378084625042
+- 🔗 **Launch:** [https://ordinals.com/r/sat/1247378084625042/at/-1/content](https://ordinals.com/r/sat/1247378084625042/at/-1/content)
+- 🔗 **Website:** [https://www.oodinals.com/](https://www.oodinals.com/)
 
-Font Variants
-Gotham Bold
-Inscription ID: 0fba757d15ee4a8af1a7460f2e0306795d7da86b4170203619929e02974b1a41i0
-URL: https://ordinals.com/inscription/0fba757d15ee4a8af1a7460f2e0306795d7da86b4170203619929e02974b1a41i0
-Gotham Regular
-Inscription ID: 3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i1
-URL: https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i1
-Gotham Italic
-Inscription ID: 3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i0
-URL: https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i0
-Gotham Italic Bold
-Inscription ID: 3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i2
-URL: https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i2
-Usage
+**Note:** Originally a search tool for exploring ordinals on the Bitcoin blockchain, now upgraded with a built-in inscriber.
+
+---
+
+### OodinalsLoader - The Inscribed Inscriber
+The first inscribed inscriber. Client-side tool that creates Bitcoin inscriptions directly from your browser. Multi-wallet support (UniSat, Xverse, OKX, Leather, Phantom). No backend required - everything runs in the browser.
+
+- **Sat:** 404079598183801
+- 🔗 **Launch:** [https://ordinals.com/content/eaac21645c2ad060c730425ab115881aa985028c98614c8d409400738a6b461ei0](https://ordinals.com/content/eaac21645c2ad060c730425ab115881aa985028c98614c8d409400738a6b461ei0)
+- 🔗 **GitHub:** [https://github.com/switch-900/OodinalsLoader](https://github.com/switch-900/OodinalsLoader)
+
+---
+
+### Nexus OCW - Wallet Connect for Inscriptions
+Wallet connection infrastructure that can be used inside inscriptions. Enables multi-wallet support (UniSat, Xverse, OKX, Leather, Phantom) that works within inscriptions, providing the foundation for truly decentralized Bitcoin applications (Bapps).
+
+- 🔗 **Inscription:** [https://ordinals.com/content/7cf63b82b244d41121ef823a6532705cd25257d7420a405daa388394de5b529ei0](https://ordinals.com/content/7cf63b82b244d41121ef823a6532705cd25257d7420a405daa388394de5b529ei0)
+- 🔗 **GitHub:** [https://github.com/switch-900/nexus-ocw](https://github.com/switch-900/nexus-ocw)
+
+---
+
+### Gemerator - Proof of Concept
+Generative gem generator with built-in mint platform. Every gem inscription includes full minting capabilities. An innovative profit-sharing experiment showcasing the power of OodinalsLoader in real-world applications.
+
+---
+
+## 🗺️ Bitmap Technology
+
+### Simple Bitmap
+A lightweight tool for visualizing bitmap data with clean, efficient rendering and intuitive navigation.
+
+🔗 **Launch:** [https://switch-900.github.io/SimpleBitmap/](https://switch-900.github.io/SimpleBitmap/)
+
+---
+
+### Bitoshi Explorer
+A simple tool to view the number of Bitoshis in a bitmap with detailed statistics and intuitive interface.
+
+🔗 **Launch:** [https://switch-900.github.io/Bitoshi-Explorer/](https://switch-900.github.io/Bitoshi-Explorer/)
+
+---
+
+## 🎨 3D Bitmap Platform
+
+### 3D Bitmap
+A platform for rendering and visualizing three-dimensional bitmaps with advanced graphics and immersive experiences.
+
+🔗 **Launch:** [https://www.3dbitmap.com/](https://www.3dbitmap.com/)
+
+---
+
+### BitPaint
+A creative tool for digital painting on bitmaps with intuitive brush controls and real-time rendering capabilities.
+
+🔗 **Launch:** [https://www.3dbitmap.com/bitpaint](https://www.3dbitmap.com/bitpaint)
+
+---
+
+### Umbrel Integration
+A comprehensive guide for integrating 3D Bitmap tools with Umbrel nodes for self-hosted solutions.
+
+🔗 **Guide:** [https://www.3dbitmap.com/umbrel.html](https://www.3dbitmap.com/umbrel.html)
+
+---
+
+## 🔧 Ord Tools
+
+### AirDrop YAML Generator
+Simplifies the creation of YAML files for airdrops, enabling efficient distribution of inscriptions to multiple addresses. This project provides a simple web-based tool to generate YAML files required for airdrop operations on an Ordinal node, such as one running on an Umbrel node.
+
+**Purpose:** The tool is designed to simplify the process of creating YAML files for airdrops by allowing users to input the necessary details and automatically generating the required files. These YAML files can then be used with Ordinal nodes to distribute inscriptions to multiple destination addresses.
+
+🔗 **Launch:** [https://switch-900.github.io/AirDrop/](https://switch-900.github.io/AirDrop/)
+
+---
+
+### Parcel Sizer
+Visualizes Bitcoin transaction parcel sizes within a block, inspired by Bitfeed's artistic representation.
+
+🔗 **Launch:** [https://switch-900.github.io/Parcel-Sizer/](https://switch-900.github.io/Parcel-Sizer/)
+
+---
+
+### Parcel Command Generator
+Automates the creation of YAML configurations and shell commands for bitmap parcels with batch capabilities.
+
+🔗 **Launch:** [https://switch-900.github.io/ParcelGenerator/](https://switch-900.github.io/ParcelGenerator/)
+
+---
+
+### Batch Creator
+Bitmap Parcel creator for NODE operations with advanced batch processing capabilities and automation.
+
+🔗 **Launch:** [https://switch-900.github.io/Batch-creator/](https://switch-900.github.io/Batch-creator/)
+
+---
+
+## 📊 Ordinals Tools
+
+### Ordinal Tree
+Explore hierarchical structures of inscriptions and their children. Features content navigation, fullscreen mode, and ID copying for easy management.
+
+🔗 **Launch:** [https://ordinals.com/content/d6b2c108f6e2ba3f97cde7774d00dd75b2ee3f7c07740bb216b1b0f65f13d4cai0](https://ordinals.com/content/d6b2c108f6e2ba3f97cde7774d00dd75b2ee3f7c07740bb216b1b0f65f13d4cai0)
+
+---
+
+### Bitmap and Parcel Validator
+Validates bitmaps and parcels on-chain using ordinal inscriptions for integrity verification and compliance checking.
+
+🔗 **Launch:** [https://ordinals.com/content/d3b049472e885b65ed0513a675c8e01a28fffe5eb8b347394168048390c8b14ci0](https://ordinals.com/content/d3b049472e885b65ed0513a675c8e01a28fffe5eb8b347394168048390c8b14ci0)
+
+---
+
+## 💻 Development Tools
+
+### BITMAPSAT
+A guide for setting up your digital canvas with features like reinscription updates, smart parcel activation, and real-time synchronization. Used in Blockamoto Concept Map.
+
+🔗 **Repository:** [https://github.com/switch-900/BITMAPSAT](https://github.com/switch-900/BITMAPSAT)
+
+---
+
+### Blockamoto Concept Map
+Conceptual mapping tool utilizing BITMAPSAT technology for blockchain visualization and navigation.
+
+🔗 **View:** [https://ordinals.com/content/bf50cd2f407491af43c2bb021536f8107c5426f19b26a65a6d6247e2de609ef1i0](https://ordinals.com/content/bf50cd2f407491af43c2bb021536f8107c5426f19b26a65a6d6247e2de609ef1i0)
+
+---
+
+### Combinio
+Node.js script designed to aggregate all your project's code files into a single combined.txt file. This is particularly useful for utilizing AI tools to review your code structure or for creating a consolidated view of your project.
+
+🔗 **Repository:** [https://github.com/switch-900/combinio](https://github.com/switch-900/combinio)
+
+---
+
+## 🔤 Gotham Font Collection
+
+Professional Gotham fonts stored as Bitcoin Ordinal inscriptions on the blockchain for permanent, decentralized access.
+
+### Font Variants
+
+**Gotham Bold**
+- Inscription ID: `0fba757d15ee4a8af1a7460f2e0306795d7da86b4170203619929e02974b1a41i0`
+- 🔗 [View Inscription](https://ordinals.com/inscription/0fba757d15ee4a8af1a7460f2e0306795d7da86b4170203619929e02974b1a41i0)
+
+**Gotham Regular**
+- Inscription ID: `3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i1`
+- 🔗 [View Inscription](https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i1)
+
+**Gotham Italic**
+- Inscription ID: `3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i0`
+- 🔗 [View Inscription](https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i0)
+
+**Gotham Italic Bold**
+- Inscription ID: `3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i2`
+- 🔗 [View Inscription](https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i2)
+
+### Usage
 These fonts are stored as Bitcoin Ordinal inscriptions on the Bitcoin blockchain. To use these fonts:
+1. Access the font files through the provided URLs
+2. Download the font files from the ordinal inscriptions
+3. Install them locally or reference them in your web projects
 
-Access the font files through the provided URLs
-Download the font files from the ordinal inscriptions
-Install them locally or reference them in your web projects
-About Ordinals
+### About Ordinals
 Bitcoin Ordinals allow for the inscription of arbitrary data, including fonts, directly onto the Bitcoin blockchain. This creates a permanent, decentralized storage solution for digital assets.
 
-Font Information
-Font Family: Gotham
-Variants: Regular, Bold, Italic, Italic Bold
-Storage: Bitcoin Ordinals
-Blockchain: Bitcoin
 
+## 👤 About Switch-900
+
+Building Bitcoin Ordinals infrastructure, Bitmap technology, and on-chain inscription systems. Creating tools that work entirely on Bitcoin with no centralized servers. 
+
+**Focus:** Truly decentralized Bitcoin applications (Bapps) that are unstoppable and require no backend infrastructure.
+
+---
+
+Built with ⚡ by Switch-900
