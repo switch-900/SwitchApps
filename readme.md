@@ -178,6 +178,37 @@ Node.js script designed to aggregate all your project's code files into a single
 
 ---
 
+### Rapier Physics Runtime (On-Chain)
+On-chain ESM loader that exposes the `@react-three/rapier` API for React Three Fiber applications. Fast real-time rigid-body physics engine inscribed on Bitcoin - enables gravity, collisions, character controllers, and gameplay queries entirely from inscriptions. No external dependencies required.
+
+**Features:**
+- Real-time physics simulation (gravity, collisions, contacts)
+- Interactive objects (stacking, pushing, constraints/joints)
+- Gameplay queries (raycasts, shape casts, intersection tests)
+- Character movement (kinematic controllers)
+- Fully client-side via importmap
+
+**Loader:** `rapier-runtime` → https://ordinals.com/r/sat/479489914976493/at/-1/content
+
+**Usage:**
+```json
+{
+  "imports": {
+    "rapier-runtime": "/r/sat/479489914976493/at/-1/content"
+  }
+}
+```
+
+```js
+import { Physics, RigidBody, CuboidCollider, useRapier } from 'rapier-runtime';
+```
+
+**Exports:** Components (Physics, RigidBody, colliders), Hooks (useRapier, useBeforePhysicsStep), Utils (vec3, quat, euler), Engine API (rapier, compat)
+
+🔗 **Launch:** [https://ordinals.com/r/sat/479489914976493/at/-1/content](https://ordinals.com/r/sat/479489914976493/at/-1/content)
+
+---
+
 ## 🔤 Gotham Font Collection
 
 Professional Gotham fonts stored as Bitcoin Ordinal inscriptions on the blockchain for permanent, decentralized access.
