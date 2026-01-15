@@ -231,6 +231,9 @@ Professional Gotham fonts stored as Bitcoin Ordinal inscriptions on the blockcha
 - Inscription ID: `3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i2`
 - 🔗 [View Inscription](https://ordinals.com/inscription/3e70186d09a3188e0d33758b4cd9773d401e4e6415be4a61146158c29363f450i2)
 
+## Other Inscriptions
+Bip39 English Words: aca5e63ee6292f0de402adf6603072eceaad3872e7fa3e91b91bf40d95c75875i0
+
 ### Usage
 These fonts are stored as Bitcoin Ordinal inscriptions on the Bitcoin blockchain. To use these fonts:
 1. Access the font files through the provided URLs
