@@ -208,7 +208,9 @@ import { Physics, RigidBody, CuboidCollider, useRapier } from 'rapier-runtime';
 🔗 **Launch:** [https://ordinals.com/r/sat/479489914976493/at/-1/content](https://ordinals.com/r/sat/479489914976493/at/-1/content)
 
 ---
-
+QR Code 
+https://ordinals.com/content/c29ef679a1060115cbd01a892c97aa13731622cd6465511205f8fc8d2e091a9bi0
+jquery-qrcode v0.14.0 - `https://ordinals.com/content/6f3ff06fb6414bf40c1dac14c3a78fd3979476467cf8a0e5f107c79e9455fc02i0
 ## 🔤 Gotham Font Collection
 
 Professional Gotham fonts stored as Bitcoin Ordinal inscriptions on the blockchain for permanent, decentralized access.
